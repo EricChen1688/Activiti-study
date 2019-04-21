@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="processEngineConfiguration"
+          class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+        <!-- 第一种方式 -->
+        <property name="eventListeners">
+            <list>
+                <!--                <bean class="cn.eccto.activiti.cn.eccto.activiti.config.event.ProcessEventListener"/>-->
+                <!--注册自定义监听器-->
+                <bean class="cn.eccto.activiti.event.CustomEventListener"/>
+            </list>
+        </property>
+        <!-- 第二种方式 -->
+        <!--        <property name="typedEventListeners">-->
+        <!--            <map>-->
+        <!--                &lt;!&ndash; 指定事件类型 ActivitiEventType 中的静态变量&ndash;&gt;-->
+        <!--                <entry key="ENTITY_CREATED">-->
+        <!--                    <list>-->
+        <!--                        <bean class="cn.eccto.activiti.cn.eccto.activiti.config.event.ProcessEventListener"/>-->
+        <!--                    </list>-->
+        <!--                </entry>-->
+        <!--            </map>-->
+        <!--        </property>-->
+    </bean>
+
+
+</beans>

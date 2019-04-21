@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+    <signal id="signalStart" name="ecSignal"/>
+    <process id="ectest" name="ectest" isExecutable="true">
+        <startEvent id="start" name="开始"/>
+        <sequenceFlow sourceRef="start" targetRef="singal-received"/>
+        <intermediateCatchEvent id="singal-received">
+            <signalEventDefinition signalRef="signalStart"/>
+        </intermediateCatchEvent>
+        <sequenceFlow sourceRef="singal-received" targetRef="end"/>
+        <endEvent id="end"/>
+    </process>
+</definitions>
