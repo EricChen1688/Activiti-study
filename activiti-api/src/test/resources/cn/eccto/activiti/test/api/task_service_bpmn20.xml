@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/processdef">
+    <process id="ec_test" name="我的测试流程" isExecutable="true">
+        <startEvent id="start_event" name="开始"></startEvent>
+        <userTask id="submit_form" name="提交表单">
+            <extensionElements>
+                <activiti:formProperty id="message" name="申请信息" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="name" name="申请人姓名" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="submitTime" name="提交时间" type="date" datePattern="MM-dd-yyyy hh:mm"
+                                       required="true"></activiti:formProperty>
+                <activiti:formProperty id="submitType" name="确认申请" type="string"
+                                       required="true"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="sid-7C14C2F3-7290-496A-963B-8D89797D65E6" sourceRef="start_event"
+                      targetRef="submit_form"></sequenceFlow>
+        <exclusiveGateway id="decideSubmit" name="提交 OR 取消"></exclusiveGateway>
+        <sequenceFlow id="sid-B7F08D12-F393-48E8-8B92-D214CE8CC899" sourceRef="submit_form"
+                      targetRef="decideSubmit"></sequenceFlow>
+        <userTask id="tl_approve" name="主管审批">
+            <extensionElements>
+                <activiti:formProperty id="tlApprove" name="主管审批结果" type="string"
+                                       required="true"></activiti:formProperty>
+                <activiti:formProperty id="tlMessage" name="主管备注" type="string" required="true"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <userTask id="hr_approve" name="HR 审批">
+            <extensionElements>
+                <activiti:formProperty id="hrApprove" name="人事审批结果" type="string"
+                                       required="true"></activiti:formProperty>
+                <activiti:formProperty id="hrMessage" name="人事备注" type="string" required="true"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <exclusiveGateway id="decide_hr_approve" name="人事审批校验"></exclusiveGateway>
+        <sequenceFlow id="sid-168C1BD8-CDD4-492F-988A-ACB1DE2AF8FB" sourceRef="hr_approve"
+                      targetRef="decide_hr_approve"></sequenceFlow>
+        <endEvent id="end_event" name="结束"></endEvent>
+        <endEvent id="cancel_submit" name="取消提交"></endEvent>
+        <exclusiveGateway id="decide_approve" name="主管审批校验"></exclusiveGateway>
+        <sequenceFlow id="sid-6AE616D3-D27D-4B97-BC6F-7CBF6665EE57" sourceRef="decideSubmit" targetRef="cancel_submit">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${submitType == "N" || submitType == "n"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-A595A2C0-DA1B-460D-A113-55E14FBF684E" sourceRef="tl_approve"
+                      targetRef="decide_approve"></sequenceFlow>
+        <sequenceFlow id="sid-1F9EA2F8-DB28-4A6D-B993-4A21B8B22E67" sourceRef="decide_approve" targetRef="submit_form">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${tlApprove == "N" || tlApprove == "n"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-159939CB-3A9A-4A57-BA7E-F1C127BB0936" sourceRef="decide_hr_approve"
+                      targetRef="submit_form">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${hrApprove == "N" || hrApprove == "n"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-8E512BB7-FCCE-44B7-BBA4-413B57F253D7" sourceRef="decide_approve" targetRef="hr_approve">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${tlApprove == "Y" || tlApprove == "y"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-0D1C8C49-3340-43EC-A6F1-F608CBBE4D14" sourceRef="decide_hr_approve" targetRef="end_event">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${hrApprove == "Y" || hrApprove == "y"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="sid-C2785E65-5E5C-40F9-8408-44217C08F666" sourceRef="decideSubmit" targetRef="tl_approve">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${submitType == "Y" || submitType == "y"}]]></conditionExpression>
+        </sequenceFlow>
+    </process>
+</definitions>

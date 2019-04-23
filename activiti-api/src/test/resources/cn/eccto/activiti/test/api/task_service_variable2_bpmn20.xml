@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/processdef">
+    <process id="ec_test" name="我的测试流程" isExecutable="true">
+
+        <startEvent id="start_event" name="开始"/>
+        <sequenceFlow sourceRef="start_event" targetRef="myTask"/>
+        <userTask id="myTask" name="myTask" activiti:candidateUsers="user1,user2,user3">
+            <documentation>测试变量是否替换 ${message}</documentation>
+        </userTask>
+        <sequenceFlow sourceRef="myTask" targetRef="myTask2"/>
+        <userTask id="myTask2" name="myTask" activiti:candidateUsers="user1,user2,user3">
+            <documentation>测试变量是否替换 ${message}</documentation>
+        </userTask>
+        <sequenceFlow sourceRef="myTask2" targetRef="end"/>
+        <endEvent id="end"/>
+    </process>
+</definitions>
